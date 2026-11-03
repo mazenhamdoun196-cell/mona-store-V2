@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Men's Perfumes - Mona Store</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cairo:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #fdf8f8;
+            --card-bg: #ffffff;
+            --text-color: #222;
+            --gold: #c5a880;
+            --shadow: 0 8px 25px rgba(0,0,0,0.08);
+            --border: #e0e0e0;
+            --danger: #d90429;
+            --success: #25D366;
+            --search-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-color: #120a12;
+            --card-bg: #2a1a2a;
+            --text-color: #f1f1f1;
+            --gold: #d4af37;
+            --shadow: 0 8px 25px rgba(0,0,0,0.5);
+            --border: #3a2a3a;
+            --search-bg: #1a0f1a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg-color); color: var(--text-color); transition: 0.3s; }
+
+        /* الهيدر */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; position: relative;
+        }
+
+        .top-nav a, .top-nav button {
+            color: var(--text-color); background: none; border: none;
+            font-size: 22px; cursor: pointer;
+        }
+
+        /* العنوان */
+        .page-title {
+            text-align: center; margin: 10px 0 25px 0; padding: 0 20px;
+        }
+        .page-title h1 { 
+            font-family: 'Playfair Display', serif;
+            font-size: 38px; 
+            color: #000000; 
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+        body.dark-mode .page-title h1 {
+            color: var(--gold);
+        }
+        .page-title .sub-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px; color: #888; margin-top: 10px; letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        /* البحث */
+        .search-container { max-width: 800px; margin: 0 auto 30px auto; padding: 0 20px; position: relative; }
+        .search-container input {
+            width: 100%; padding: 15px 45px 15px 15px; border-radius: 10px;
+            border: 1px solid var(--border); background: var(--search-bg);
+            color: var(--text-color); font-size: 15px; outline: none;
+        }
+        .search-container i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #888; }
+
+        /* شبكة المنتجات */
+        .products-grid {
+            max-width: 800px; margin: 0 auto 40px auto; padding: 0 20px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+        }
+
+        .product-card {
+            background: var(--card-bg); border-radius: 15px;
+            overflow: hidden; box-shadow: var(--shadow);
+            cursor: pointer; transition: transform 0.2s;
+            display: flex; flex-direction: column; border: 1px solid var(--border);
+        }
+        .product-card:active { transform: scale(0.98); }
+
+        .product-img-container { position: relative; width: 100%; padding-top: 100%; background: #f9f9f9; }
+        .product-img-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        .sold-out-badge {
+            position: absolute; top: 50%; left: 0; width: 100%;
+            background: rgba(217, 4, 41, 0.85); color: #fff;
+            text-align: center; padding: 6px 0; font-weight: bold;
+            font-size: 13px; transform: translateY(-50%); text-transform: uppercase;
+        }
+
+        .product-info { padding: 12px; text-align: center; }
+        .product-title { font-size: 15px; font-weight: 700; margin: 0; }
+
+        /* البوب أب */
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .popup-overlay.active { display: block; opacity: 1; }
+        .popup-sheet {
+            position: fixed; bottom: -100%; left: 0; width: 100%;
+            background: var(--card-bg); border-top-left-radius: 25px; border-top-right-radius: 25px;
+            z-index: 1000; padding: 25px 20px; display: flex; flex-direction: column;
+            transition: bottom 0.3s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            max-width: 600px; margin: 0 auto; right: 0;
+        }
+        .popup-sheet.active { bottom: 0; }
+        .popup-drag-handle { width: 50px; height: 5px; background: #ccc; border-radius: 5px; margin: 0 auto 20px auto; }
+        .popup-close {
+            position: absolute; top: 20px; left: 20px; background: var(--bg-color);
+            border: none; color: var(--text-color); font-size: 18px; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+        }
+        .popup-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; text-align: center; }
+        .popup-price { font-size: 24px; font-weight: 800; color: var(--gold); text-align: center; margin-bottom: 15px; }
+        .popup-qty-info { text-align: center; font-size: 14px; margin-bottom: 20px; color: #777; }
+        
+        .qty-input-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .qty-input-wrapper label { font-size: 14px; font-weight: 600; }
+        
+        /* تعديل خانة الكمية */
+        .qty-input-wrapper input {
+            width: 120px; padding: 12px; text-align: center; font-size: 18px;
+            border: 2px solid var(--border); border-radius: 10px;
+            background: var(--search-bg); color: var(--text-color); font-weight: bold;
+            transition: border-color 0.2s;
+        }
+        .qty-input-wrapper input:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+        
+        .qty-hint { font-size: 12px; color: #888; margin-top: 5px; }
+        .qty-error { color: var(--danger); font-size: 13px; font-weight: bold; text-align: center; margin-top: 5px; display: none; }
+
+        /* الزراير */
+        .popup-buttons { display: flex; gap: 10px; width: 100%; }
+        .btn-wa { flex: 1; background: var(--success); color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; cursor: pointer; transition: 0.3s; }
+        .btn-add-cart { flex: 1; background: var(--gold); color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; }
+        
+        /* تصميم الزراير وهي معطلة */
+        .btn-wa:disabled, .btn-add-cart:disabled {
+            background: #ccc !important;
+            color: #666 !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="perfumes.html"><i class="fa-solid fa-arrow-right"></i></a>
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+        <a href="index.html"><i class="fa-solid fa-house"></i></a>
+    </div>
+
+    <div class="page-title">
+        <h1>MEN'S PERFUMES</h1>
+        <div class="sub-title">ELEGANT PERFUME COLLECTION</div>
+    </div>
+
+    <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="ابحث عن اسم العطر...">
+    </div>
+
+    <div class="products-grid" id="products-grid"></div>
+
+    <div class="popup-overlay" id="popup-overlay" onclick="closePopup()"></div>
+    <div class="popup-sheet" id="popup-sheet">
+        <div class="popup-drag-handle"></div>
+        <button class="popup-close" onclick="closePopup()"><i class="fa-solid fa-xmark"></i></button>
+        
+        <div class="popup-title" id="popup-title">-</div>
+        <div class="popup-price" id="popup-price">-</div>
+        <div class="popup-qty-info" id="popup-qty-info">الكمية المتاحة: -</div>
+        
+        <div class="qty-input-wrapper">
+            <label for="qty-input">الكمية المطلوبة</label>
+            <input type="number" id="qty-input" placeholder="" min="1">
+            <div class="qty-hint" id="qty-hint">رجاءً اكتب الكمية المطلوبة</div>
+            <div class="qty-error" id="qty-error">الكمية المطلوبة غير متوفرة</div>
+        </div>
+
+        <div class="popup-buttons">
+            <a href="#" id="btn-wa" class="btn-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> اطلب الآن</a>
+            <button id="btn-add-cart" class="btn-add-cart" onclick="addToCart()"><i class="fa-solid fa-cart-plus"></i> أضف للسلة</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBreocaDHdzeqAlWGCb0CORcLpX3hbtR0A",
+            authDomain: "mona-store-v2.firebaseapp.com",
+            projectId: "mona-store-v2",
+            storageBucket: "mona-store-v2.firebasestorage.app",
+            messagingSenderId: "805351875315",
+            appId: "1:805351875315:web:88129bea715f5bbc404d86",
+            databaseURL: "https://mona-store-v2-default-rtdb.firebaseio.com/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const productsGrid = document.getElementById('products-grid');
+        const searchInput = document.getElementById('search-input');
+        let allProducts = [];
+
+        onValue(ref(db, 'products/men-perfumes'), (snapshot) => {
+            allProducts = [];
+            const data = snapshot.val();
+            
+            if (data) {
+                for (let id in data) {
+                    allProducts.push({ id, ...data[id] });
+                }
+                renderProducts(allProducts);
+            } else {
+                productsGrid.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; padding: 20px; color: #888;">لا توجد منتجات حالياً في هذا القسم.</p>';
+            }
+        });
+
+        function renderProducts(productsToRender) {
+            productsGrid.innerHTML = ''; 
+            
+            if (productsToRender.length === 0) {
+                productsGrid.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; padding: 20px; color: #888;">لا توجد منتجات مطابقة للبحث.</p>';
+                return;
+            }
+
+            productsToRender.forEach(prod => {
+                const isSoldOut = (parseInt(prod.qty) === 0 || prod.qty === '0' || prod.qty === 0 || !prod.qty);
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => openPopup(prod);
+                
+                let imgSrc = prod.image;
+                if (!imgSrc.startsWith('http')) {
+                    imgSrc = `images/${prod.image}`;
+                }
+
+                card.innerHTML = `
+                    <div class="product-img-container" style="background: #ddd;">
+                        ${isSoldOut ? '<div class="sold-out-badge">Sold Out</div>' : ''}
+                        <img src="${imgSrc}" alt="${prod.name}" onerror="this.style.opacity='0'">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${prod.name}</h3>
+                    </div>
+                `;
+                productsGrid.appendChild(card);
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
+            renderProducts(filtered);
+        });
+
+        let currentProduct = null;
+
+        function openPopup(prod) {
+            currentProduct = prod;
+            
+            document.getElementById('popup-title').innerText = prod.name;
+            document.getElementById('popup-price').innerText = `${prod.price} EGP`;
+            
+            const qty = parseInt(prod.qty) || 0;
+            document.getElementById('popup-qty-info').innerText = `الكمية المتاحة: ${qty}`;
+            
+            const qtyInput = document.getElementById('qty-input');
+            qtyInput.value = ''; // تبدأ فاضية
+            qtyInput.max = qty;
+            qtyInput.placeholder = `متاح ${qty}`;
+
+            // تصفير الرسائل
+            document.getElementById('qty-error').style.display = 'none';
+            document.getElementById('qty-hint').style.display = 'block';
+            qtyInput.style.borderColor = 'var(--border)';
+
+            // تعطيل الزراير في الأول
+            const waBtn = document.getElementById('btn-wa');
+            const cartBtn = document.getElementById('btn-add-cart');
+            waBtn.style.pointerEvents = 'none';
+            waBtn.style.opacity = '0.5';
+            cartBtn.disabled = true;
+
+            const isSoldOut = qty <= 0;
+            if (isSoldOut) {
+                waBtn.style.display = 'none';
+                cartBtn.style.display = 'none';
+            } else {
+                waBtn.style.display = 'flex';
+                cartBtn.style.display = 'flex';
+            }
+
+            // دالة التحقق
+            const validateQty = () => {
+                const requested = parseInt(qtyInput.value);
+                
+                if (!requested || requested < 1) {
+                    // لسه مكتوبش حاجة
+                    document.getElementById('qty-hint').style.display = 'block';
+                    document.getElementById('qty-error').style.display = 'none';
+                    qtyInput.style.borderColor = 'var(--border)';
+                    waBtn.style.pointerEvents = 'none';
+                    waBtn.style.opacity = '0.5';
+                    cartBtn.disabled = true;
+                } else if (requested > qty) {
+                    // طلب أكتر من المتاح
+                    document.getElementById('qty-hint').style.display = 'none';
+                    document.getElementById('qty-error').style.display = 'block';
+                    qtyInput.style.borderColor = 'var(--danger)';
+                    waBtn.style.pointerEvents = 'none';
+                    waBtn.style.opacity = '0.5';
+                    cartBtn.disabled = true;
+                } else {
+                    // كله تمام
+                    document.getElementById('qty-hint').style.display = 'none';
+                    document.getElementById('qty-error').style.display = 'none';
+                    qtyInput.style.borderColor = 'var(--success)';
+                    
+                    // تجهيز الواتساب
+                    const waMessage = `مرحباً Mona Store، أود طلب المنتج: ${prod.name} - الكمية: ${requested} - السعر: ${prod.price} EGP`;
+                    waBtn.href = `https://wa.me/201147720724?text=${encodeURIComponent(waMessage)}`;
+                    waBtn.style.pointerEvents = 'auto';
+                    waBtn.style.opacity = '1';
+                    cartBtn.disabled = false;
+                }
+            };
+
+            qtyInput.oninput = validateQty;
+            // شغل الدالة أول ما تفتح
+            validateQty();
+
+            document.getElementById('popup-overlay').classList.add('active');
+            document.getElementById('popup-sheet').classList.add('active');
+        }
+
+        window.closePopup = function() {
+            document.getElementById('popup-overlay').classList.remove('active');
+            document.getElementById('popup-sheet').classList.remove('active');
+            currentProduct = null;
+        };
+
+        window.addToCart = function() {
+            if (!currentProduct) return;
+            
+            const qtyInput = document.getElementById('qty-input');
+            const requestedQty = parseInt(qtyInput.value);
+            const availableQty = parseInt(currentProduct.qty);
+
+            if (requestedQty > availableQty || requestedQty < 1) {
+                alert("الكمية المطلوبة غير متوفرة!");
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('mona_cart')) || [];
+            
+            const existingItem = cart.find(item => item.id === currentProduct.id);
+            if (existingItem) {
+                existingItem.qty += requestedQty;
+            } else {
+                cart.push({
+                    id: currentProduct.id,
+                    name: currentProduct.name,
+                    price: currentProduct.price,
+                    image: currentProduct.image,
+                    qty: requestedQty
+                });
+            }
+
+            localStorage.setItem('mona_cart', JSON.stringify(cart));
+            alert("تمت الإضافة للسلة بنجاح!");
+            closePopup();
+        };
+
+        const themeBtn = document.getElementById('theme-btn');
+        const isDark = localStorage.getItem('theme') === 'dark';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        }
+
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            const darkModeOn = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', darkModeOn ? 'dark' : 'light');
+            themeBtn.innerHTML = darkModeOn ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        }
+    </script>
+</body>
+</html>
