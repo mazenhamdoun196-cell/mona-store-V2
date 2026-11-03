@@ -354,24 +354,66 @@
         }
 
         // تحويل الصورة لـ Base64 عشان تتحفظ في فايربيس وتفضل موجودة
-        window.handleImageSelect = function(inputElement) {
-            const file = inputElement.files[0];
-            if (!file) return;
+        const GITHUB_TOKEN = "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"; // التوكن بتاعك
+const REPO_OWNER = "mazenhamdoun196-cell"; // اسم حسابك
+const REPO_NAME = "mona-store-V2"; // اسم الريبو
+const BRANCH = "main"; // الفرع الرئيسي
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64String = e.target.result;
-                
-                const row = inputElement.closest('.product-row');
-                const preview = row.querySelector('.image-preview');
-                const hiddenInput = row.querySelector('.input-image');
+window.handleImageSelect = async function(inputElement) {
+    const file = inputElement.files[0];
+    if (!file) return;
 
-                preview.src = base64String;
-                preview.style.display = 'block';
-                hiddenInput.value = base64String; // بنخزن الصورة كاملة
-            };
-            reader.readAsDataURL(file);
-        };
+    const row = inputElement.closest('.product-row');
+    const preview = row.querySelector('.image-preview');
+    const hiddenInput = row.querySelector('.input-image');
+    const label = inputElement.parentElement;
+
+    // بنعرض الصورة في البريفيو فوراً
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+    // تحويل الصورة لـ Base64 عشان نبعتها لـ GitHub API
+    const reader = new FileReader();
+    reader.onload = async function() {
+        const base64Data = reader.result.split(',')[1]; // شيل المقدمة
+        const fileName = `img_${Date.now()}.jpg`; // اسم فريد للصورة
+        const filePath = `images/${fileName}`; // المسار في الريبو
+
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: `Upload image: ${fileName}`,
+                    content: base64Data,
+                    branch: BRANCH
+                })
+            });
+
+            if (response.ok) {
+                // لو نجح، بنجيب الرابط المباشر للصورة
+                const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${filePath}`;
+                hiddenInput.value = rawUrl; // بنحفظ الرابط المباشر
+                label.innerHTML = '<i class="fa-solid fa-check"></i> Uploaded';
+                setTimeout(() => { label.innerHTML = '<i class="fa-solid fa-camera"></i> Choose Image'; }, 2000);
+            } else {
+                throw new Error('GitHub API Error');
+            }
+        } catch (error) {
+            alert("حصل خطأ في رفع الصورة، تأكد من التوكن أو الإنترنت.");
+            label.innerHTML = '<i class="fa-solid fa-camera"></i> Choose Image';
+            hiddenInput.value = ''; // تفريغ القيمة لو فشل
+            preview.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(file);
+};
 
         window.addNewProductRow = function(category) {
             const tempId = 'new-' + Date.now();
@@ -467,4 +509,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
