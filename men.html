@@ -303,7 +303,7 @@
             waBtn.style.opacity = '0.5';
             cartBtn.disabled = true;
 
-            const isSoldOut = qty <= 0;
+            const isSoldOut = (parseInt(qty) === 0 || qty === '0' || qty === 0 || !qty);
             if (isSoldOut) {
                 waBtn.style.display = 'none';
                 cartBtn.style.display = 'none';
