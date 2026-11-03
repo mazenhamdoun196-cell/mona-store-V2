@@ -252,9 +252,9 @@
                 }
 
                 card.innerHTML = `
-    <div class="product-img-container" style="background: #ddd;">
+    <div class="product-img-container">
         ${isSoldOut ? '<div class="sold-out-badge">Sold Out</div>' : ''}
-        <img src="${imgSrc}" alt="${prod.name}" onerror="this.style.opacity='0'">
+        <img src="${imgSrc}" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
     </div>
     <div class="product-info">
         <h3 class="product-title">${prod.name}</h3>
