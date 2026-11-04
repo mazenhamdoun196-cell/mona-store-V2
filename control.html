@@ -239,9 +239,19 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                loadData();
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    
+    // طلب التوكن بعد تسجيل الدخول
+    const tokenInput = prompt("أدخل التوكن السري:", "");
+    if (tokenInput) {
+        window.myGitHubToken = tokenInput;
+    } else {
+        alert("لازم تدخل التوكن عشان تقدر ترفع صور!");
+    }
+
+    loadData();
+        }
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
@@ -354,7 +364,7 @@
         }
 
         // تحويل الصورة لـ Base64 عشان تتحفظ في فايربيس وتفضل موجودة
-        const GITHUB_TOKEN = prompt("أدخل التوكن السري:", "");
+        const GITHUB_TOKEN = window.myGitHubToken;
 const REPO_OWNER = "mazenhamdoun196-cell"; // اسم حسابك
 const REPO_NAME = "mona-store-V2"; // اسم الريبو
 const BRANCH = "main"; // الفرع الرئيسي
