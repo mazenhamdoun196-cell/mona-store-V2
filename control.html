@@ -229,10 +229,19 @@
             errorMsg.style.color = "var(--primary)";
             
             signInWithEmailAndPassword(auth, email, password)
-                .catch(error => {
-                    errorMsg.style.color = "var(--danger)";
-                    errorMsg.innerText = "Invalid email or password.";
-                });
+    .then(() => {
+        // طلب التوكن بعد نجاح الدخول
+        const tokenInput = prompt("أدخل التوكن السري:", "");
+        if (tokenInput) {
+            window.myGitHubToken = tokenInput;
+        } else {
+            alert("لازم تدخل التوكن عشان تقدر ترفع صور!");
+        }
+    })
+    .catch(error => {
+        errorMsg.style.color = "var(--danger)";
+        errorMsg.innerText = "Invalid email or password.";
+    });
         };
 
         window.doLogout = function() { signOut(auth); };
@@ -241,17 +250,7 @@
             if (user) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
-    
-    // طلب التوكن بعد تسجيل الدخول
-    const tokenInput = prompt("أدخل التوكن السري:", "");
-    if (tokenInput) {
-        window.myGitHubToken = tokenInput;
-    } else {
-        alert("لازم تدخل التوكن عشان تقدر ترفع صور!");
-    }
-
     loadData();
-        }
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
