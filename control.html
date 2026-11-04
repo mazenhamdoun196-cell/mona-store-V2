@@ -219,7 +219,7 @@
             document.getElementById('lightbox').style.display = 'none';
         };
 
-        //setPersistence(auth, browserLocalPersistence).catch((error) => console.error(error));
+        setPersistence(auth, browserSessionPersistence).catch((error) => console.error(error));
 
         window.doLogin = function() {
             const email = document.getElementById('login-email').value;
